@@ -5,16 +5,32 @@ const bodyParser = require('body-parser');
 const personRoutes = require('./rotues/personRoutes');
 const MenuRoutes = require('./rotues/menuItemRoutes');
 require('dotenv').config();
+const passport = require('./middleware/auth');
 
-// middleware
 app.use(bodyParser.json());
-app.use('/person' , personRoutes);
-app.use('/menu' , MenuRoutes);
+
 
 const PORT = process.env.PORT || 4000
 
+//middleware function
+// const logRequest = (req , res , next)=>{
+//   console.log(`[${new Date().toLocaleString()}] Request made to ${req.originalUrl} `);
+//   next();
+// }
 
-app.get('/' , (req , res)=>{
+
+
+// authentication use krne ke liye below line type likhte hai
+app.use(passport.initialize());
+
+const localAuthMiddleware = passport.authenticate('local' , {session:false});
+
+
+app.use('/person' , personRoutes);
+app.use('/menu' , MenuRoutes);
+
+
+app.get('/', (req , res)=>{
   res.send('Welcome to our Hotal..... How can i help you ');
 });
 
